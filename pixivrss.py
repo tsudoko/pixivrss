@@ -86,13 +86,13 @@ def main():
 
     opts, args = getopt.getopt(sys.argv[1:], "np:t:u:")
     for o, a in opts:
-        if o == "u":
+        if o == "-u":
             username = a
-        elif o == "p":
+        elif o == "-p":
             password = a
-        elif o == "t":
+        elif o == "-t":
             token = a
-        elif o == "n":
+        elif o == "-n":
             unattended = True
 
     if not unattended and not token:
