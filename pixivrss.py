@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from email.utils import formatdate as rfc822
 from datetime import datetime
+from html import escape
 import platform
 
 import requests
@@ -59,11 +60,13 @@ def make_rss(works):
     print("  <generator>pixivrss (Python " + ver + ")</generator>")
 
     for i in works:
+        item_title = i['title'] + " | " + i['user']['name']
+
         print("\n  <item>")
-        print("    <title>" + i['title'] + " | " + i['user']['name'] + "</title>")
-        print("    <link>" + ILLUST_URL + str(i['id']) + "</link>")
+        print("    <title>" + escape(item_title) + "</title>")
+        print("    <link>" + escape(ILLUST_URL + str(i['id'])) + "</link>")
         if i['caption']:
-            print("    <description>" + i['caption'] + "</description>")
+            print("    <description>" + escape(i['caption']) + "</description>")
         print("    <pubDate>" + mkdate(i['created_time']) + "</pubDate>")
         print("    <guid>" + str(i['id']) + "</guid>")
         print("  </item>")
