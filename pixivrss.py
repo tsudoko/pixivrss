@@ -3,6 +3,9 @@ from email.utils import formatdate as rfc822
 from datetime import datetime
 from html import escape
 import platform
+import getpass
+import getopt
+import sys
 
 import requests
 
@@ -73,3 +76,38 @@ def make_rss(works):
 
     print("</channel>")
     print("</rss>")
+
+
+def main():
+    unattended = False
+    username = ""
+    password = ""
+    token = ""
+
+    opts, args = getopt.getopt(sys.argv[1:], "np:t:u:")
+    for o, a in opts:
+        if o == "u":
+            username = a
+        elif o == "p":
+            password = a
+        elif o == "t":
+            token = a
+        elif o == "n":
+            unattended = True
+
+    if not unattended and not token:
+        if not username:
+            username = input("Pixiv ID: ")
+        if not password:
+            password = getpass.getpass("Password: ")
+
+    if not ((username and password) or token):
+        raise Exception("not enough credentials")
+
+    if not token:
+        token = get_access_token(username, password)
+
+    make_rss(get_following(token))
+
+if __name__ == "__main__":
+    main()
