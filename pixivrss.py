@@ -26,7 +26,7 @@ def get_access_token(username, password):
     r = r.json()
 
     if "response" not in r or "access_token" not in r['response']:
-        raise Exception("unexpected json:\n" + r)
+        raise Exception("unexpected json:\n" + str(r))
 
     return r['response']['access_token']
 
@@ -37,7 +37,7 @@ def get_following(access_token):
     r = r.json()
 
     if "response" not in r:
-        raise Exception("unexpected json:\n" + r)
+        raise Exception("unexpected json:\n" + str(r))
 
     return r['response']
 
