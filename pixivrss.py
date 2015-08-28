@@ -62,7 +62,8 @@ def make_rss(works):
         print("\n  <item>")
         print("    <title>" + i['title'] + " | " + i['user']['name'] + "</title>")
         print("    <link>" + ILLUST_URL + str(i['id']) + "</link>")
-        print("    <description>" + i['caption'] + "</description>")
+        if i['caption']:
+            print("    <description>" + i['caption'] + "</description>")
         print("    <pubDate>" + mkdate(i['created_time']) + "</pubDate>")
         print("    <guid>" + str(i['id']) + "</guid>")
         print("  </item>")
