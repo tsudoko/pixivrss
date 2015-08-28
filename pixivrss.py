@@ -22,23 +22,23 @@ def get_access_token(username, password):
     }
 
     r = requests.post("https://oauth.secure.pixiv.net/auth/token", data=auth)
+    r = r.json()
 
-    print(r.json())
+    if "response" not in r or "access_token" not in r['response']:
+        raise Exception("unexpected json:\n" + r)
 
-    if not r.json()['response'] or not r.json()['response']['access_token']:
-        raise Exception("unexpected json:\n" + r.json())
-
-    return r.json()['response']['access_token']
+    return r['response']['access_token']
 
 
 def get_following(access_token):
     headers = {"Authorization": "Bearer " + access_token}
     r = requests.get(API_URL + "/me/following/works.json", headers=headers)
+    r = r.json()
 
-    if not r.json()['response']:
-        raise Exception("unexpected json:\n" + r.json())
+    if "response" not in r:
+        raise Exception("unexpected json:\n" + r)
 
-    return r.json()['response']
+    return r['response']
 
 
 def make_rss(works):
