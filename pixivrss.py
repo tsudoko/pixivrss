@@ -60,11 +60,11 @@ def make_rss(works):
 
     for i in works:
         print("\n  <item>")
-        print("    <title>" + i['title'] + " | " + i['name'] + "</title>")
-        print("    <link>" + ILLUST_URL + str(item['id']) + "</link>")
-        print("    <description>" + item['caption'] + "</description>")
-        print("    <pubDate>" + mkdate(item['created_time']) + "</pubDate>")
-        print("    <guid>" + str(item['id']) + "</guid>")
+        print("    <title>" + i['title'] + " | " + i['user']['name'] + "</title>")
+        print("    <link>" + ILLUST_URL + str(i['id']) + "</link>")
+        print("    <description>" + i['caption'] + "</description>")
+        print("    <pubDate>" + mkdate(i['created_time']) + "</pubDate>")
+        print("    <guid>" + str(i['id']) + "</guid>")
         print("  </item>")
 
     print("</channel>")
