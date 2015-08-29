@@ -61,6 +61,7 @@ def make_rss(works):
     print("  <title>[pixiv] フォロー新着作品</title>")
     print("  <link>http://www.pixiv.net/bookmark_new_illust.php</link>")
     print("  <pubDate>" + now + "</pubDate>")
+    print("  <description />")
     print("  <generator>pixivrss (Python " + ver + ")</generator>")
 
     for i in works:
@@ -72,7 +73,7 @@ def make_rss(works):
         if i['caption']:
             print("    <description>" + escape(i['caption']) + "</description>")
         print("    <pubDate>" + mkdate(i['created_time']) + "</pubDate>")
-        print("    <guid>" + str(i['id']) + "</guid>")
+        print("    <guid>" + escape(ILLUST_URL + str(i['id'])) + "</guid>")
         print("  </item>")
 
     print("</channel>")
