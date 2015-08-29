@@ -4,6 +4,7 @@ from datetime import datetime
 from html import escape
 import platform
 import getpass
+import os.path
 import getopt
 import sys
 
@@ -84,9 +85,24 @@ def main():
     password = ""
     token = ""
 
-    opts, args = getopt.getopt(sys.argv[1:], "np:t:u:")
+    n = os.path.basename(sys.argv[0])
+    USAGE = "usage: " + n + " [-n] [-u username] [-p password] [-t accesstoken]"
+    HELP = """
+ -n - unattended mode; don't ask for credentials
+ -t - use the API token instead of username/password; it's generated after
+      logging in through the API and usually valid for an hour"""
+
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "hnp:t:u:", ["help"])
+    except getopt.GetoptError:
+        print(USAGE)
+        exit(1)
+
     for o, a in opts:
-        if o == "-u":
+        if o in ("-h", "--help"):
+            print(USAGE + "\n" + HELP)
+            exit()
+        elif o == "-u":
             username = a
         elif o == "-p":
             password = a
