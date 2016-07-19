@@ -70,13 +70,14 @@ def make_rss(works):
     print("  <generator>pixivrss (Python " + ver + ")</generator>")
 
     for i in works:
-        item_title = i['title'] + " | " + i['user']['name']
+        title = i['title'] + " | " + i['user']['name']
 
         print("\n  <item>")
-        print("    <title>" + escape(item_title) + "</title>")
+        print("    <title>" + escape(title) + "</title>")
         print("    <link>" + escape(ILLUST_URL + str(i['id'])) + "</link>")
         if i['caption']:
-            print("    <description>" + escape(i['caption']) + "</description>")
+            caption = escape(i['caption']).replace("\r\n", "<br />")
+            print("    <description>" + caption + "</description>")
         print("    <pubDate>" + mkdate(i['created_time']) + "</pubDate>")
         print("    <guid>" + escape(ILLUST_URL + str(i['id'])) + "</guid>")
         print("  </item>")
