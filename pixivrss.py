@@ -70,7 +70,7 @@ def make_rss(works):
     print("  <generator>pixivrss (Python " + ver + ")</generator>")
 
     for i in works:
-        title = i['title'] + " | " + i['user']['name']
+        title = "「%s」/「%s」" % (i['title'], i['user']['name'])
 
         print("\n  <item>")
         print("    <title>" + escape(title) + "</title>")
