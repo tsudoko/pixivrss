@@ -8,9 +8,9 @@ from email.utils import formatdate as rfc822
 from datetime import datetime
 from html import escape
 import platform
+import argparse
 import getpass
 import os.path
-import getopt
 import sys
 
 import requests
@@ -87,50 +87,27 @@ def make_rss(works):
 
 
 def main():
-    unattended = False
-    username = ""
-    password = ""
-    token = ""
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-u", "--username")
+    parser.add_argument("-p", "--password")
+    parser.add_argument("-n", "--unattended", action="store_true", help="don't ask for credentials")
+    parser.add_argument("-t", "--token", help="use the API token instead of username/password; it's generated after logging in through the API and is usually valid for an hour")
 
-    n = os.path.basename(sys.argv[0])
-    USAGE = "usage: " + n + " [-n] [-u username] [-p password] [-t accesstoken]"
-    HELP = """
- -n - unattended mode; don't ask for credentials
- -t - use the API token instead of username/password; it's generated after
-      logging in through the API and usually valid for an hour"""
+    args = parser.parse_args()
 
-    try:
-        opts, args = getopt.getopt(sys.argv[1:], "hnp:t:u:", ["help"])
-    except getopt.GetoptError:
-        print(USAGE)
-        exit(1)
+    if not args.unattended and not args.token:
+        if not args.username:
+            args.username = input("Pixiv ID: ")
+        if not args.password:
+            args.password = getpass.getpass("Password: ")
 
-    for o, a in opts:
-        if o in ("-h", "--help"):
-            print(USAGE + "\n" + HELP)
-            exit()
-        elif o == "-u":
-            username = a
-        elif o == "-p":
-            password = a
-        elif o == "-t":
-            token = a
-        elif o == "-n":
-            unattended = True
-
-    if not unattended and not token:
-        if not username:
-            username = input("Pixiv ID: ")
-        if not password:
-            password = getpass.getpass("Password: ")
-
-    if not ((username and password) or token):
+    if not ((args.username and args.password) or args.token):
         raise Exception("not enough credentials")
 
-    if not token:
-        token = get_access_token(username, password)
+    if not args.token:
+        args.token = get_access_token(args.username, args.password)
 
-    make_rss(get_following(token))
+    make_rss(get_following(args.token))
 
 if __name__ == "__main__":
     main()
