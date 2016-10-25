@@ -4,13 +4,13 @@
 # Dedication license. Its contents can be found in the LICENSE file or at:
 # http://creativecommons.org/publicdomain/zero/1.0/
 
-from email.utils import formatdate as rfc822
 from datetime import datetime
+from email.utils import formatdate as rfc822
 from html import escape
-import platform
 import argparse
 import getpass
 import os.path
+import platform
 import sys
 
 import requests
