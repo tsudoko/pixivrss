@@ -19,7 +19,7 @@ CLIENT_ID = "bYGKuGVw91e0NMfPGp44euvGt59s"
 CLIENT_SECRET = "HP3RmkgAmEGro0gn1x9ioawQE8WMfvLXDz3ZqxpK"
 
 API_URL = "https://public-api.secure.pixiv.net/v1"
-ILLUST_URL = "http://www.pixiv.net/member_illust.php?mode=medium&illust_id="
+ILLUST_URL = "http://www.pixiv.net/whitecube/user/{user_id}/illust/{illust_id}"
 
 
 def get_access_token(username, password):
@@ -71,15 +71,16 @@ def make_rss(works):
 
     for i in works:
         title = "「%s」/「%s」" % (i['title'], i['user']['name'])
+        url = ILLUST_URL.format(user_id=str(i['user']['id']), illust_id=str(i['id']))
 
         print("\n  <item>")
         print("    <title>" + escape(title) + "</title>")
-        print("    <link>" + escape(ILLUST_URL + str(i['id'])) + "</link>")
+        print("    <link>" + escape(url) + "</link>")
         if i['caption']:
             caption = escape(i['caption']).replace("\r\n", "<br />")
             print("    <description>" + caption + "</description>")
         print("    <pubDate>" + mkdate(i['created_time']) + "</pubDate>")
-        print("    <guid>" + escape(ILLUST_URL + str(i['id'])) + "</guid>")
+        print("    <guid>" + escape(url) + "</guid>")
         print("  </item>")
 
     print("</channel>")
