@@ -77,7 +77,7 @@ def make_rss(works):
         print("    <title>" + escape(title) + "</title>")
         print("    <link>" + escape(url) + "</link>")
         if i['caption']:
-            caption = escape(i['caption']).replace("\r\n", "<br />")
+            caption = escape(i['caption'].replace("\r\n", "<br />"))
             print("    <description>" + caption + "</description>")
         print("    <pubDate>" + mkdate(i['created_time']) + "</pubDate>")
         print("    <guid>" + escape(url) + "</guid>")
