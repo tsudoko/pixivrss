@@ -6,7 +6,7 @@
 
 from datetime import datetime
 from email.utils import formatdate as rfc822
-from html import escape
+from xml.sax.saxutils import escape
 import argparse
 import getpass
 import os.path
