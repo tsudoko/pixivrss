@@ -11,6 +11,7 @@ import argparse
 import getpass
 import os.path
 import platform
+import re
 import sys
 
 import requests
@@ -18,7 +19,7 @@ import requests
 CLIENT_ID = "bYGKuGVw91e0NMfPGp44euvGt59s"
 CLIENT_SECRET = "HP3RmkgAmEGro0gn1x9ioawQE8WMfvLXDz3ZqxpK"
 
-API_URL = "https://public-api.secure.pixiv.net/v1"
+API_URL = "https://app-api.pixiv.net"
 ILLUST_URL = "http://pixiv.net/i/{illust_id}"
 
 
@@ -42,19 +43,22 @@ def get_access_token(username, password):
 
 def get_following(access_token):
     headers = {"Authorization": "Bearer " + access_token}
-    r = requests.get(API_URL + "/me/following/works.json", headers=headers)
+    params = {"restrict": "all"}  # "Restrict is required"
+    r = requests.get(API_URL + "/v2/illust/follow", headers=headers, params=params)
     r = r.json()
 
-    if "response" not in r:
+    if "illusts" not in r:
         raise Exception("unexpected json:\n" + str(r))
 
-    return r['response']
+    return r['illusts']
 
 
-def make_rss(works):
+def make_rss(illusts):
+    # expected date format: 2017-05-11T18:28:46+09:00
     def mkdate(d):
-        format_string = "%Y-%m-%d %H:%M:%S %z"
-        r = rfc822(datetime.strptime(d + " +0900", format_string).timestamp())
+        d = re.sub("(..):(..)$", r"\1\2", d)
+        format_string = "%Y-%m-%dT%H:%M:%S%z"
+        r = rfc822(datetime.strptime(d, format_string).timestamp())
         return r
 
     now = rfc822(datetime.now().timestamp())
@@ -69,7 +73,7 @@ def make_rss(works):
     print("  <description />")
     print("  <generator>pixivrss (Python " + ver + ")</generator>")
 
-    for i in works:
+    for i in illusts:
         title = "「%s」/「%s」" % (i['title'], i['user']['name'])
         url = ILLUST_URL.format(user_id=str(i['user']['id']), illust_id=str(i['id']))
 
@@ -79,7 +83,7 @@ def make_rss(works):
         if i['caption']:
             caption = escape(i['caption'].replace("\r\n", "<br />"))
             print("    <description>" + caption + "</description>")
-        print("    <pubDate>" + mkdate(i['created_time']) + "</pubDate>")
+        print("    <pubDate>" + mkdate(i['create_date']) + "</pubDate>")
         print("    <guid>" + escape(url) + "</guid>")
         print("  </item>")
 
