@@ -53,8 +53,8 @@ def get_following(access_token):
 
 def make_rss(works):
     def mkdate(d):
-        format_string = "%Y-%m-%d %H:%M:%S"
-        r = rfc822(datetime.strptime(d, format_string).timestamp())
+        format_string = "%Y-%m-%d %H:%M:%S %z"
+        r = rfc822(datetime.strptime(d + " +0900", format_string).timestamp())
         return r
 
     now = rfc822(datetime.now().timestamp())
