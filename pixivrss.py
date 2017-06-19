@@ -60,8 +60,8 @@ def make_rss(works):
     now = rfc822(datetime.now().timestamp())
     ver = platform.python_version()
 
-    print("<?xml version=\"1.0\"?>")
-    print("<rss version=\"2.0\">")
+    print('<?xml version="1.0"?>')
+    print('<rss version="2.0">')
     print("<channel>")
     print("  <title>[pixiv] フォロー新着作品</title>")
     print("  <link>http://www.pixiv.net/bookmark_new_illust.php</link>")
