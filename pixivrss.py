@@ -20,6 +20,7 @@ CLIENT_SECRET = "HP3RmkgAmEGro0gn1x9ioawQE8WMfvLXDz3ZqxpK"
 
 API_URL = "https://public-api.secure.pixiv.net/v1"
 ILLUST_URL = "http://pixiv.net/i/{illust_id}"
+THUMB_URL = "http://embed.pixiv.net/decorate.php?illust_id={}"
 
 
 def get_access_token(username, password):
@@ -72,13 +73,19 @@ def make_rss(works):
     for i in works:
         title = "「%s」/「%s」" % (i['title'], i['user']['name'])
         url = ILLUST_URL.format(user_id=str(i['user']['id']), illust_id=str(i['id']))
+        thumb_available = i['age_limit'] == "all-age"
 
         print("\n  <item>")
         print("    <title>" + escape(title) + "</title>")
         print("    <link>" + escape(url) + "</link>")
+        print("    <description><![CDATA[")
         if i['caption']:
-            caption = escape(i['caption'].replace("\r\n", "<br />"))
-            print("    <description>" + caption + "</description>")
+            print("      " + i['caption'].replace("\r\n", "<br />"))
+            if thumb_available:
+                print("      <br />")
+        if thumb_available:
+            print('      <img src="' + escape(THUMB_URL.format(i['id'])) + '" />')
+        print("    ]]></description>")
         print("    <pubDate>" + mkdate(i['created_time']) + "</pubDate>")
         print("    <guid>" + escape(url) + "</guid>")
         print("  </item>")
