@@ -19,8 +19,8 @@ CLIENT_ID = "bYGKuGVw91e0NMfPGp44euvGt59s"
 CLIENT_SECRET = "HP3RmkgAmEGro0gn1x9ioawQE8WMfvLXDz3ZqxpK"
 
 API_URL = "https://public-api.secure.pixiv.net/v1"
-ILLUST_URL = "http://pixiv.net/i/{illust_id}"
-THUMB_URL = "http://embed.pixiv.net/decorate.php?illust_id={}"
+ILLUST_URL = "https://pixiv.net/i/{illust_id}"
+THUMB_URL = "https://embed.pixiv.net/decorate.php?illust_id={}"
 
 
 def get_access_token(username, password):
