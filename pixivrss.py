@@ -4,11 +4,12 @@
 # Dedication license. Its contents can be found in the LICENSE file or at:
 # http://creativecommons.org/publicdomain/zero/1.0/
 
-from datetime import datetime
+from datetime import datetime, timezone
 from email.utils import formatdate as rfc822
 from xml.sax.saxutils import escape
 import argparse
 import getpass
+import hashlib
 import os.path
 import platform
 import sys
@@ -17,6 +18,7 @@ import requests
 
 CLIENT_ID = "bYGKuGVw91e0NMfPGp44euvGt59s"
 CLIENT_SECRET = "HP3RmkgAmEGro0gn1x9ioawQE8WMfvLXDz3ZqxpK"
+TIME_SECRET = "28c1fdd170a5204386cb1313c7077b34f83e4aaf4aa829ce78c231e05b0bae2c"
 
 API_URL = "https://public-api.secure.pixiv.net/v1"
 ILLUST_URL = "https://pixiv.net/i/{illust_id}"
@@ -24,6 +26,13 @@ THUMB_URL = "https://embed.pixiv.net/decorate.php?illust_id={}"
 
 
 def get_access_token(username, password):
+    #timestamp = datetime.now(timezone.utc).isoformat(timespec='seconds') # python 3.6+
+    timestamp = datetime.now(timezone.utc).isoformat().rsplit('.')[0] + "+00:00"
+    timehash = hashlib.md5(timestamp.encode() + TIME_SECRET.encode()).hexdigest()
+    headers = {
+        "x-client-time": timestamp,
+        "x-client-hash": timehash,
+    }
     auth = {
         "username": username,
         "password": password,
@@ -32,7 +41,7 @@ def get_access_token(username, password):
         "client_secret": CLIENT_SECRET,
     }
 
-    r = requests.post("https://oauth.secure.pixiv.net/auth/token", data=auth)
+    r = requests.post("https://oauth.secure.pixiv.net/auth/token", data=auth, headers=headers)
     r = r.json()
 
     if "response" not in r or "access_token" not in r['response']:
